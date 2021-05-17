@@ -1,5 +1,5 @@
 # L2-CAF: A Debugger Neural Network
-(ECCV 2020) Official PyTorch implementation of **A Generic Visualization Approach for Convolutional Neural Networks**
+(ECCV2020) Official PyTorch implementation of **A Generic Visualization Approach for Convolutional Neural Networks**
 
 [Paper](https://arxiv.org/abs/2007.09748) | [1 Min Video](https://youtu.be/W4xaKQlPEl0) | [10 Mins Video](https://youtu.be/Wpw3ewSvnFE)
 
