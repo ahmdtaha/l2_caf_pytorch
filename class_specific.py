@@ -18,13 +18,13 @@ def main():
     output_dir = './output_heatmaps/'
 
     img_name_ext = 'dog_ball.jpg'; top_k = [242,852];k=2
-    # img_name_ext = 'dog_butterfly.jpg'; top_k = [207,323];k=2
+    img_name_ext = 'dog_butterfly.jpg'; top_k = [207,323];k=2
 
     img_name, _ = osp.splitext(img_name_ext)
     rgb_img , pytorch_img = common.load_img(img_name_ext)
     pytorch_img = pytorch_img.cuda()
 
-    arch_name = 'googlenet'
+    arch_name = 'resnet50' # googlenet resnet50
     model, feature_maps, post_conv_subnet = common.load_architecture(arch_name)
     NT = model(pytorch_img)
     A = feature_maps[-1] ## Last conv layer feature maps extracted using a PyTorch hook

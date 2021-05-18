@@ -7,6 +7,19 @@ The goal of this PyTorch implementation is to provide a simple, readable, and fa
 
 L2-CAF does not require any finetuning or specific layers. It is easy to integrate L2-CAF in various network architectures. 
 
+## Sample Visualization 
+L2-CAF cls-specific using ResNet50
+
+| ![Boxer](./imgs/dog_ball_cls_specific_242_boxer_resnet50.png)    |  ![Tennis Ball](./imgs/dog_ball_cls_specific_852_tennis ball_resnet50.png) |
+|---|---|
+| ![golden retriever](./imgs/dog_butterfly_cls_specific_207_golden retriever_resnet50.png)  |  ![monarch](./imgs/dog_butterfly_cls_specific_323_monarch_resnet50.png) |
+
+## Requirements
+
+* Python 3+ [Tested on 3.7]
+* PyTorch 1.X [Tested on torch 1.6.0 and torchvision 0.6.0]
+
+
 ## Usage example
 The `class_oblivious.py` presents the class oblivious variant of L2-CAF, while `class_specific.py` to presents the class specific variant of L2-CAF.
 
