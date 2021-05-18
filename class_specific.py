@@ -1,13 +1,10 @@
-import cv2
 import torch
 import common
 import numpy as np
-import torch.nn as nn
 import os.path as osp
 from utils import lr_utils
 import torch.optim as optim
 from utils import heatmap_utils
-import matplotlib.pyplot as plt
 from utils.imagenet_lbls import imagenet_lbls
 from constraint_attention_filter import L2_CAF
 
@@ -42,18 +39,14 @@ def main():
     max_iter = 1000
     initial_lr = 0.5
 
-    # top_k = [top_k[2]]
     for top_i in top_k:
 
         l2_caf = L2_CAF(A.shape[-1]).cuda()
         per_class_logits_ph = torch.ones_like(NT)
-        per_class_logits_ph[0,top_i] = -1
-
-        # NT_cls_logits = per_class_logits_ph * NT
-        # cls_specific_loss = torch.sum(NT_cls_logits)
+        per_class_logits_ph[0,top_i] = -1 # -> Maximize top_i cls logit and minimize other logits
 
         def cls_specific_loss(output_vec):
-            loss = torch.sum(output_vec * per_class_logits_ph)
+            loss = torch.sum(output_vec * per_class_logits_ph) ## -FT_cls[top_i] + FT_cls[!top_i]
             return loss
 
         optimizer = optim.SGD(l2_caf.parameters(),lr=initial_lr)
@@ -75,23 +68,6 @@ def main():
             lr_scheduler.step()
 
             if iteration % 50 == 0:
-
-                # frame_mask = common.normalize_filter(l2_caf.filter.detach().cpu().numpy())
-                # heatmap_utils.save_heatmap(frame_mask,
-                #                            save=output_dir + img_name + '_msk_cls_{}_{}_{}.png'.format(top_i, 'l2norm',iteration))
-                #
-                # fig, ax = plt.subplots()
-                # ax.matshow(frame_mask)
-                # for i in range(7):
-                #     for j in range(7):
-                #         c = frame_mask[j, i]
-                #         ax.text(i, j, '{:.2f}'.format(c), va='center', ha='center')
-                #
-                #
-                # plt.show()
-                # plt.savefig(output_dir + img_name + '_plt_cls_{}_{}_{}.png'.format(top_i, 'l2norm',iteration))
-                # plt.close()
-
                 if torch.abs(loss.item() - prev_loss) < 10e-7:
                     break
                 prev_loss = loss

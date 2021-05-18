@@ -1,4 +1,3 @@
-import cv2
 import torch
 import common
 import numpy as np
@@ -7,8 +6,6 @@ import os.path as osp
 from utils import lr_utils
 import torch.optim as optim
 from utils import heatmap_utils
-import matplotlib.pyplot as plt
-from utils.imagenet_lbls import imagenet_lbls
 from constraint_attention_filter import L2_CAF
 
 
@@ -35,10 +32,7 @@ def main():
     A = feature_maps[-1] ## Last conv layer feature maps extracted using a PyTorch hook
 
 
-
     l2_caf = L2_CAF(A.shape[-1]).cuda()
-
-
 
 
     max_iter = 500
@@ -64,22 +58,6 @@ def main():
         optimizer.step()
         lr_scheduler.step()
         if iteration % 50 == 0:
-
-            # frame_mask = common.normalize_filter(l2_caf.filter.detach().cpu().numpy())
-            # heatmap_utils.save_heatmap(frame_mask,
-            #                            save=output_dir + img_name + '_msk_obl_{}.png'.format(iteration))
-            #
-            # fig, ax = plt.subplots()
-            # ax.matshow(frame_mask)
-            # for i in range(7):
-            #     for j in range(7):
-            #         c = frame_mask[j, i]
-            #         ax.text(i, j, '{:.2f}'.format(c), va='center', ha='center')
-            #
-            #
-            # plt.show()
-            # plt.savefig(output_dir + img_name + '_plt_obl_{}.png'.format(iteration))
-            # plt.close()
             if torch.abs(loss.item() - prev_loss) < 10e-7:
                 break
             prev_loss = loss

@@ -1,6 +1,4 @@
-import cv2
 import torch
-import imageio
 import numpy as np
 import torch.nn as nn
 from PIL import Image
@@ -97,21 +95,3 @@ def load_architecture(arch_name):
     post_conv_subnet.eval()
 
     return model, feature_maps, post_conv_subnet
-
-
-
-
-
-
-
-def load_googlenet(): ## inception5b is the last conv layer
-    # conv_layer = 'layer4'
-    feature_maps = []
-
-
-    return model,feature_maps,post_conv_subnet
-
-def load_densenet169(): ## features is the last conv layer
-    feature_maps = []
-
-    return model,feature_maps,post_conv_subnet
