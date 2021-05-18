@@ -28,9 +28,9 @@ All hyperparameters are hard-coded. Just pick an image from `input_imgs` dir (e.
 
 
 ### MISC Notes
-* The L2-CAF is originally implemented in [Tensorflow](https://github.com/ahmdtaha/constrained_attention_filter). I hope this PyTorch implementation raises awareness of L2-CAF, this cool visualization tool  :)
-* I noticed that visualization heatmaps are consistent across different Tensorflow models. In contrast, the output heatmaps from different PyTorch models seems inconsistent.  
-* This PyTorch implementation visualizes attention of the last conv layer. While L2-CAF can visualize attention in intermediate layers, I did not support this feature to keep the code simple. Yet, please note that the Tensorflow implementation supports intermediate layer visualization. 
+* The L2-CAF is originally implemented in [TensorFlow](https://github.com/ahmdtaha/constrained_attention_filter). I hope this PyTorch implementation raises awareness of L2-CAF, this cool visualization tool  :)
+* I noticed that visualization heatmaps are consistent across different TensorFlow models. In contrast, the output heatmaps from different PyTorch models seems inconsistent. This means the cls-oblivious heatmaps generated from ResNet50 and GoogleNet are significantly different. It is not required that heatmaps be consistent between different architecttures. Yet, I am surprised that there is a difference in behaviour between Tensorflow and PyTorch architectures.
+* This PyTorch implementation visualizes attention of the last conv layer only. While L2-CAF can visualize attention in intermediate layers, I did not support this feature to keep the code simple. Yet, please note that the TensorFlow implementation supports intermediate layer visualization. 
 
 ### TODO LIST
 * Support more architectures
