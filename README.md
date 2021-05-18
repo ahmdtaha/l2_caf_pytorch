@@ -10,9 +10,9 @@ L2-CAF does not require any finetuning or specific layers. It is easy to integra
 ## Sample Visualization 
 L2-CAF cls-specific using ResNet50
 
-| ![Boxer](./imgs/dog_ball_cls_specific_242_boxer_resnet50.png)    |  ![Tennis Ball](./imgs/dog_ball_cls_specific_852_tennis ball_resnet50.png) |
+| ![Boxer](./imgs/dog_ball_cls_specific_242_boxer_resnet50.png)    |  ![Tennis Ball](imgs/dog_ball_cls_specific_852_tennis_ball_resnet50.png) |
 |---|---|
-| ![golden retriever](./imgs/dog_butterfly_cls_specific_207_golden retriever_resnet50.png)  |  ![monarch](./imgs/dog_butterfly_cls_specific_323_monarch_resnet50.png) |
+| ![golden retriever](imgs/dog_butterfly_cls_specific_207_golden_retriever_resnet50.png)  |  ![monarch](./imgs/dog_butterfly_cls_specific_323_monarch_resnet50.png) |
 
 ## Requirements
 
