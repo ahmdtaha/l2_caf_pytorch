@@ -25,7 +25,7 @@ The `class_oblivious.py` presents the class oblivious variant of L2-CAF, while `
 
 Both `python class_oblivious.py` or `python class_specific.py` will use the default hard-coded hyperparameters.
 
-You can override the default hyperparameter from the cmd line, e.g., `python class_specific.py --input_img='dog_butterfly.jpg' --cls_logits='207,323'`. Check config.base_config.Config to know more about L2-CAF parameters.
+You can override the default hyperparameter from the cmd line, e.g., `python class_specific.py --input_img='dog_butterfly.jpg' --cls_logits='207,323'`. Check `config.base_config.Config` to know more about L2-CAF parameters.
 
 
 
