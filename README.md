@@ -23,7 +23,10 @@ L2-CAF cls-specific using ResNet50
 ## Usage example
 The `class_oblivious.py` presents the class oblivious variant of L2-CAF, while `class_specific.py` presents the class specific variant of L2-CAF.
 
-All hyperparameters are hard-coded. Just pick an image from `input_imgs` dir (e.g., [class_oblivious](https://github.com/ahmdtaha/l2_caf_pytorch/blob/448f6e8d71c60006edbd069a3b0025b1eab6a1f5/class_oblivious.py#L25)), and the output visualization maps will be saved inside the `output_heatmaps` dir.
+Both `python class_oblivious.py` or `python class_specific.py` will use the default hard-coded hyperparameters.
+
+You can override the default hyperparameter from the cmd line, e.g., `python class_specific.py --input_img='dog_butterfly.jpg' --cls_logits='207,323'`. Check config.base_config.Config to know more about L2-CAF parameters.
+
 
 
 

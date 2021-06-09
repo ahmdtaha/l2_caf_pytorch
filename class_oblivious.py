@@ -1,3 +1,4 @@
+import sys
 import torch
 import common
 import numpy as np
@@ -6,37 +7,31 @@ import os.path as osp
 from utils import lr_utils
 import torch.optim as optim
 from utils import heatmap_utils
+from configs.base_config import Config
 from constraint_attention_filter import L2_CAF
 
 
 
 
-def main():
-    output_dir = './output_heatmaps/'
-
-    # img_name_ext = 'cute_dog.jpg'
-    # img_name_ext = 'ILSVRC2012_val_00000009.JPEG'
-    # img_name_ext = 'ILSVRC2012_val_00000021.JPEG'
-    # img_name_ext = 'ILSVRC2012_val_00000012.JPEG'
-    # img_name_ext = 'bike_dog.jpg'
-    img_name_ext = 'dog_ball.jpg'
-    # img_name_ext = 'dog_butterfly.jpg'
+def main(cfg):
+    cfg.logger.info(cfg)
+    output_dir = cfg.output_dir
+    img_name_ext = cfg.input_img
 
     img_name, _ = osp.splitext(img_name_ext)
     rgb_img , pytorch_img = common.load_img(img_name_ext)
     pytorch_img = pytorch_img.cuda()
 
-    arch_name = 'googlenet'
-    model,feature_maps,post_conv_subnet = common.load_architecture(arch_name)
+    arch_name = cfg.arch #'resnet50'
+    model,last_conv_feature_maps,post_conv_subnet = common.load_architecture(arch_name)
     NT = model(pytorch_img)
-    A = feature_maps[-1] ## Last conv layer feature maps extracted using a PyTorch hook
+    A = last_conv_feature_maps[-1] ## Last conv layer feature maps extracted using a PyTorch hook
 
 
     l2_caf = L2_CAF(A.shape[-1]).cuda()
 
-
-    max_iter = 500
-    initial_lr = 0.5
+    max_iter = cfg.max_iter
+    initial_lr = cfg.lr
 
 
     l2loss = nn.MSELoss() ## || NT - FT ||^2
@@ -52,19 +47,18 @@ def main():
 
         FT = post_conv_subnet(l2_caf(A))
         loss = l2loss(FT,NT)
-        # print(loss.item(),'->',optimizer.param_groups[0]['lr'])
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
         lr_scheduler.step()
         if iteration % 50 == 0:
-            if torch.abs(loss.item() - prev_loss) < 10e-7:
+            if torch.abs(loss.item() - prev_loss) < cfg.min_error:
                 break
             prev_loss = loss
 
         iteration += 1
 
-    print('Done after {} iterations'.format(iteration))
+    cfg.logger.info('Done after {} iterations'.format(iteration))
     ## Save result filter
     frame_mask = common.normalize_filter(l2_caf.filter.detach().cpu().numpy())
     heatmap_utils.apply_heatmap(rgb_img, frame_mask, alpha=0.6,
@@ -72,5 +66,20 @@ def main():
                                 axis='off', cmap='bwr')
 
 if __name__ == '__main__':
-    main()
+    if len(sys.argv) == 1:
+        print('Loading the default parameters')
+        default_args = [
+            '--output_dir', './output_heatmaps/',
+            '--max_iter', '1000',
+            "--lr", '0.5',
+            "--arch",'densenet169',
+            # '--input_img','dog_ball.jpg',
+            '--input_img', 'dog_butterfly.jpg',
+        ]
+        cfg = Config().parse(default_args)
+    else:
+        print('Loading parameters from cmd line')
+        cfg = Config().parse(None)
+
+    main(cfg)
 

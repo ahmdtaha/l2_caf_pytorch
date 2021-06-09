@@ -9,8 +9,7 @@ def load_img(img_name_ext,datasets_dir = './input_imgs'):
 
     test_img = Image.open('{}/{}'.format(datasets_dir, img_name_ext))
     resize_transform = T.Compose([
-        # T.Resize(256),
-        T.Scale(256),
+        T.Resize(256),
         T.CenterCrop(224),
         T.ToTensor(),
     ])
@@ -36,14 +35,13 @@ def load_img(img_name_ext,datasets_dir = './input_imgs'):
 def normalize_filter(_atten_var,filter_type='l2norm'):
     if filter_type == 'l2norm':
         frame_mask = np.reshape(np.abs(_atten_var), (_atten_var.shape[0], _atten_var.shape[1]))
-        # frame_mask = np.reshape(_atten_var, (_atten_var.shape[0], _atten_var.shape[1]))
         frame_mask = frame_mask / np.linalg.norm(frame_mask)
     else:
         raise NotImplementedError('Invalid filter type {}'.format(filter_type))
 
     return frame_mask
 
-def get_activation(feature_maps):
+def get_activation(feature_maps):  ## forward hook to catch the feature maps at a certain layer
     def hook(model, input, output):
         feature_maps.append( output.detach())
     return hook
@@ -55,7 +53,8 @@ def load_architecture(arch_name):
         if torch.cuda.is_available():
             model = model.cuda()
 
-        model.layer4.register_forward_hook(get_activation(feature_maps))
+        model.layer4.register_forward_hook(get_activation(feature_maps)) ## Layer4 provides the last conv in resnet50
+        ## Replicate the layers after the last conv layer
         post_conv_subnet = nn.Sequential(
             model.avgpool,
             nn.Flatten(),
@@ -67,7 +66,8 @@ def load_architecture(arch_name):
         if torch.cuda.is_available():
             model = model.cuda()
 
-        model.inception5b.register_forward_hook(get_activation(feature_maps))
+        model.inception5b.register_forward_hook(get_activation(feature_maps)) ## inception5b provides the last conv in googlenet
+        ## Replicate the layers after the last conv layer
         post_conv_subnet = nn.Sequential(
             model.avgpool,
             nn.Flatten(),
@@ -78,7 +78,9 @@ def load_architecture(arch_name):
         if torch.cuda.is_available():
             model = model.cuda()
 
-        model.features.register_forward_hook(get_activation(feature_maps))
+        model.features.register_forward_hook(get_activation(feature_maps)) ## features provides the last conv in densenet169
+
+        ## Replicate the layers after the last conv layer
         post_conv_subnet = nn.Sequential(
             nn.ReLU(),
             nn.AdaptiveAvgPool2d(1),
